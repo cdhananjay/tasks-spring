@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/task-lists")
@@ -33,5 +35,21 @@ public class TaskListController {
     public TaskListDto createTaskList(@RequestBody TaskListDto taskListDto){
         TaskList taskList = taskListService.createTaskList(taskListMapper.fromDto(taskListDto));
         return taskListMapper.toDto(taskList);
+    }
+
+    @GetMapping(path = "/{id}")
+    public Optional<TaskListDto> getTaskList(@PathVariable("id") UUID id) {
+        return taskListService.getTaskList(id).map(taskListMapper::toDto);
+    }
+
+    @PutMapping(path = "/{id}")
+    public TaskListDto updateTaskList(@PathVariable("id") UUID id, @RequestBody TaskListDto taskListDto) {
+        TaskList taskList = taskListService.updateTaskList(id, taskListMapper.fromDto(taskListDto));
+        return taskListMapper.toDto(taskList);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public void deleteTaskList(@PathVariable("id") UUID id) {
+        taskListService.deleteTaskList(id);
     }
 }
